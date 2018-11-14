@@ -9,15 +9,23 @@ import pytesseract
 from PIL import Image
 import http.cookiejar as cookielib
 import urllib.request as urllib2
+import time
 
 task_attribute = {}
 
 
 def main():
+	#下面是参数，cycle_times是尝试预约次数，-1为无限次数；instrument_name是预约仪器
+	cycle_times = -1, instrument_name = "BD FACS CantoII流式细胞分析仪"
 	session = requests.Session()
 	session = sign_in(session)
 	session1 = requests.Session()
-	get_instrument_types(session)
+	#get_instrument_types(session)
+	book_result = booking_with_para(session, cycle_times, instrument_name)
+	if book_result == "操作成功":
+		print("预约成功！")
+	else:
+		print("循环次数结束，请重试")
 
 
 def get_captcha(session):
@@ -68,11 +76,11 @@ def sign_in(session):
 	contain = session.post(url_login, payload_login, headers_login)
 	#print(str(contain.content).replace('\\r\\n', '\n'))
 	gb_contain = contain.content.decode("gb2312","ignore")
-	print(gb_contain)
-	#image = io.imread(captcha_url)
-	#io.imshow(image)
-	#io.show()
-	#parse_capt(captcha_url)
+	#print(gb_contain)
+	if '<script language=Javascript>alert' in gb_contain:
+		print('There is a mistake during signing in.\n Trying again...\n')
+		time.sleep(2)
+		sign_in(session)
 	return session
 
 
@@ -81,9 +89,77 @@ def get_instrument_types(session):
 	headers_types = {}
 	contain = session.get(url_types)
 	gb_contain = contain.content.decode("gb2312","ignore")
-	print(gb_contain)
+	#print(gb_contain)
 
 
+def booking_with_para(session, cycle_times = -1, instrument_name = "BD FACS CantoII流式细胞分析仪"):
+	status = 'cycle'
+	#cycle_times = -1
+	#instrument_name = "BD FACS CantoII流式细胞分析仪"#Bioruptor plus超声破碎仪 BD FACS CantoII流式细胞分析仪
+	instrument_id = {
+		'BD FACS CantoII流式细胞分析仪':'20130403A0001',
+		'BD Influx流式细胞分选仪':'20111229A0004',
+		'BD LSRFortessa流式细胞分析仪 ':'20140416A0001',
+		'BD LSRII数字化分析型流式细胞仪':'20111229A0001',
+		'latest BD FACS AriaIII流式细胞分选仪':'20181108A0001',
+		'new BD FACS AriaIII流式细胞分选仪':'20150506A0001',
+		'old BD FACS AriaIII流式细胞分选仪':'20111229A0003',
+		'Bioruptor plus超声破碎仪':'20150715A0001'
+	}
+	url_book = "http://10.1.7.222/yqgl/admin/apparatus/add4.aspx?id=" + instrument_id[instrument_name]
+	contain = session.get(url_book)
+	gb_contain = contain.content.decode("gb2312","ignore")
+	#print(gb_contain)
+	print(url_book)
+	EVENTVALIDATION_value = gb_contain.split('<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="')[1]\
+		.split('" />')[0]
+	VIEWSTATE_value = gb_contain.split('<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="')[1]\
+		.split('" />')[0]
+	#print('qqqqqqqq\n' + EVENTVALIDATION_value + '\n\nppppppppp\n\n\n')
+	#print('qqqqqqqq\n' + VIEWSTATE_value + '\n\nppppppppp')
+	#return 0
+	payload_book = {
+		'__EVENTTARGET':'',
+		'__EVENTARGUMENT':'',
+		'__LASTFOCUS':'',
+		'__VIEWSTATE':VIEWSTATE_value,
+		'apparatus_date_id_b':instrument_id[instrument_name] + '#2018-11-16',#todo
+		'hour1_b':'08:30',#todo
+		'hour2_b':'09:00',#todo
+		'teac_name_b':'1',
+		'title1_b':'1',
+		'title2_b':'1',
+		'basic_money_sort_id_b':'1',
+		'title3_b':'1',
+		'apparatus_date_use1_id_b':'0001',
+		'apparatus_date_use2_id_b':'0001',
+		'miaoshu1_b':'1',
+		'miaoshu2_b':'1',
+		'Button1':'(unable to decode value)',
+		'__EVENTVALIDATION':EVENTVALIDATION_value,
+	}
+	#print(payload_book)
+	headers_book = {}
+
+	contain = session.post(url_book, payload_book, headers_book)
+	#print(str(contain.content).replace('\\r\\n', '\n'))
+	gb_contain = contain.content.decode("gb2312","ignore")
+	#print(gb_contain)
+	book_result = gb_contain.split("<script language=Javascript>alert('")[1]\
+		.split("');")[0]
+	print('result is: ' + book_result + '\n')
+	if cycle_times != -1:
+		cycle_times -= 1
+	if book_result != "操作成功" and cycle_times != 0:
+		if cycle_times == -1:
+			print("无限循环预定")
+		print("剩余循环次数：" + str(cycle_times))
+		print('\nTrying booking again...')
+		time.sleep(0.2)
+		booking_with_para(session, cycle_times)
+	return session, book_result
+
+	
 '''
 def parse_capt(image_url):
 	# 获取这个图片的内容

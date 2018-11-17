@@ -16,7 +16,8 @@ task_attribute = {}
 
 def main():
 	#下面是参数，cycle_times是尝试预约次数，-1为无限次数；instrument_name是预约仪器
-	cycle_times = -1, instrument_name = "BD FACS CantoII流式细胞分析仪"
+	cycle_times = -1
+	instrument_name = "BD FACS CantoII流式细胞分析仪"
 	session = requests.Session()
 	session = sign_in(session)
 	session1 = requests.Session()
@@ -99,7 +100,7 @@ def booking_with_para(session, cycle_times = -1, instrument_name = "BD FACS Cant
 	instrument_id = {
 		'BD FACS CantoII流式细胞分析仪':'20130403A0001',
 		'BD Influx流式细胞分选仪':'20111229A0004',
-		'BD LSRFortessa流式细胞分析仪 ':'20140416A0001',
+		'BD LSRFortessa流式细胞分析仪':'20140416A0001',
 		'BD LSRII数字化分析型流式细胞仪':'20111229A0001',
 		'latest BD FACS AriaIII流式细胞分选仪':'20181108A0001',
 		'new BD FACS AriaIII流式细胞分选仪':'20150506A0001',
@@ -124,8 +125,8 @@ def booking_with_para(session, cycle_times = -1, instrument_name = "BD FACS Cant
 		'__LASTFOCUS':'',
 		'__VIEWSTATE':VIEWSTATE_value,
 		'apparatus_date_id_b':instrument_id[instrument_name] + '#2018-11-16',#todo
-		'hour1_b':'08:30',#todo
-		'hour2_b':'09:00',#todo
+		'hour1_b':'16:30',#todo
+		'hour2_b':'19:30',#todo
 		'teac_name_b':'1',
 		'title1_b':'1',
 		'title2_b':'1',

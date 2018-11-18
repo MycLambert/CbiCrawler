@@ -1,3 +1,14 @@
+#-----------------------------------------------------------------
+# Name:         CbiInstrumentBookingTools
+# 
+# Author:       Yuanchi MA
+# Email:        aclm234@163.com
+# Tel:          (+86)15122124509
+# 
+# Created:      18/11/2018
+# Copyright:    © Yuanchi MA 2018
+#-----------------------------------------------------------------
+
 # -*- coding: UTF-8 -*-
  
 from tkinter import *
@@ -30,6 +41,7 @@ def creat_instrument_selection(root):
 	comboxlist_instrument_name = ttk.Combobox(frame_instrument_selection, textvariable=value_instrument)
 	#下拉框可选值&默认值
 	instrument_name = (
+			#流式细胞仪
 			'BD FACS CantoII流式细胞分析仪',
 			'BD Influx流式细胞分选仪',
 			'BD LSRFortessa流式细胞分析仪',
@@ -37,7 +49,42 @@ def creat_instrument_selection(root):
 			'latest BD FACS AriaIII流式细胞分选仪',
 			'new BD FACS AriaIII流式细胞分选仪',
 			'old BD FACS AriaIII流式细胞分选仪',
-			'Bioruptor plus超声破碎仪'
+			#共聚焦显微镜
+			'Leica激光扫描共聚焦显微镜',
+			'双光子/共聚焦显微镜',
+			'转盘式共聚焦显微实时成像系统',
+			#活体成像
+			'Xenogen IVIS LuminaII系统',
+			#活细胞工作站
+			'活细胞工作站1',
+			'细胞动态可视化系统',
+			#基因功能与测序平台
+			'Miseq二代测序仪',
+			'QX200微滴式数字PCR',
+			'实时定量PCR系统7500',
+			'实时定量PCR仪(Q6)',
+			'实时定量PCR仪（Q5 0.1mL)',
+			'实时定量PCR仪（Q5 0.2mL)',
+			#蛋白分析与定量平台
+			'AKTA purifier蛋白分离纯化系统',
+			'GE 双向电泳系统',
+			'Nanopro 1000蛋白微定量系统',
+			'生物大分子相互作用仪',
+			'荧光/化学发光成像分析仪',
+			#单细胞分选系统
+			'DEPArray单细胞分选系统',
+			#其他重要仪器
+			'Agilent 2100生化分析仪',
+			'Bioruptor plus超声破碎仪',
+			'LabRAM XploRA INV拉曼光谱仪',
+			'Multiskan GO酶标仪',
+			'Synergy H4 多功能酶标仪',
+			#荧光显微镜
+			'MetaSystem染色体成像分析系统',
+			'Nikon Ti-U普通倒置荧光显微镜',
+			#生物信息
+			'IPA',
+			'NGS',
 		)
 	comboxlist_instrument_name["values"] = instrument_name
 	comboxlist_instrument_name.current(0)
@@ -173,16 +220,28 @@ def creat_mode_selection(root):
 	comboxlist_mode['width'] = 10
 	return root, value_mode
 
-	
+
+#介绍部分
+def creat_introduction(root):
+	frame_introduction = Frame(root, height=80,width=100,bd=5)#, bg='#ff3399')
+	frame_introduction.pack(anchor=W) 
+	#介绍部分：
+	lb_introduction = Label(frame_introduction, text = "Author: Yuanchi MA\nEmail: aclm234@163.com\nCopyright: © Yuanchi MA 2018")
+	lb_introduction.grid(column = 0, row = 0, padx = 10, pady = 4)
+	return root
+
+
 def gui_main():
 	root = Tk() 
 	#设置窗口的大小宽x高+偏移量
-	root.geometry('500x300+500+200')
+	root.geometry('500x320+500+200')
 	#窗口标题
-	root.title("InstrumentBooking")
+	root.title("CbiInstrumentBookingTools")
 	#设置窗口图标
-	root.iconbitmap('pic/Cbi.ico')
-	
+	try:
+		root.iconbitmap('pic/Cbi.ico')
+	except:
+		print("Can not load icon")
 	#创建选择下拉框界面
 	root, value_instrument = creat_instrument_selection(root)
 	root, value_year, value_month, value_day = creat_date_selection(root)
@@ -215,6 +274,7 @@ def gui_main():
 	confirm_button.pack()
 	cancel_button = Button(root,text='Cancel',command=cancel_event, width=10)
 	cancel_button.pack()
+	root = creat_introduction(root)
 	root.mainloop()
 	return 0
 

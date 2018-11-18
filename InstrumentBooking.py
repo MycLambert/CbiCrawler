@@ -1,4 +1,16 @@
+#-----------------------------------------------------------------
+# Name:         CbiInstrumentBookingTools
+# 
+# Author:       Yuanchi MA
+# Email:        aclm234@163.com
+# Tel:          (+86)15122124509
+# 
+# Created:      18/11/2018
+# Copyright:    © Yuanchi MA 2018
+#-----------------------------------------------------------------
+
 # -*- coding: UTF-8 -*-
+
 import re
 import requests
 import base64
@@ -24,8 +36,6 @@ def booking(value_instrument, value_year, value_month, value_day, value_start_ti
 	book_result = booking_with_para(session, value_instrument, value_year, value_month, value_day, value_start_time, value_stop_time, cycle_times)
 	if book_result == "操作成功":
 		print("预约成功！")
-	else:
-		print("循环次数结束，请重试")
 
 
 def get_captcha(session):
@@ -81,14 +91,50 @@ def sign_in(session):
 def booking_with_para(session, value_instrument, value_year, value_month, value_day, value_start_time, value_stop_time, cycle_times = -1):
 	status = 'cycle'
 	instrument_id = {
-		'BD FACS CantoII流式细胞分析仪':'20130403A0001',
-		'BD Influx流式细胞分选仪':'20111229A0004',
-		'BD LSRFortessa流式细胞分析仪':'20140416A0001',
-		'BD LSRII数字化分析型流式细胞仪':'20111229A0001',
-		'latest BD FACS AriaIII流式细胞分选仪':'20181108A0001',
-		'new BD FACS AriaIII流式细胞分选仪':'20150506A0001',
-		'old BD FACS AriaIII流式细胞分选仪':'20111229A0003',
-		'Bioruptor plus超声破碎仪':'20150715A0001'
+		#流式细胞仪
+		'BD FACS CantoII流式细胞分析仪': '20130403A0001',
+		'BD Influx流式细胞分选仪': '20111229A0004',
+		'BD LSRFortessa流式细胞分析仪': '20140416A0001',
+		'BD LSRII数字化分析型流式细胞仪': '20111229A0001',
+		'latest BD FACS AriaIII流式细胞分选仪': '20181108A0001',
+		'new BD FACS AriaIII流式细胞分选仪': '20150506A0001',
+		'old BD FACS AriaIII流式细胞分选仪': '20111229A0003',
+		#共聚焦显微镜
+		'Leica激光扫描共聚焦显微镜': '20111229A0005',
+		'双光子/共聚焦显微镜': '20130904A0001',
+		'转盘式共聚焦显微实时成像系统': '20121105A0001',
+		#活体成像
+		'Xenogen IVIS LuminaII系统': '20111229A0006',
+		#活细胞工作站
+		'活细胞工作站1': '20111229A0008',
+		'细胞动态可视化系统': '20130909A0001',
+		#基因功能与测序平台
+		'Miseq二代测序仪': '20150710A0003',
+		'QX200微滴式数字PCR': '20150710A0004',
+		'实时定量PCR系统7500': '20150710A0002',
+		'实时定量PCR仪(Q6)': '20180827A0001',
+		'实时定量PCR仪（Q5 0.1mL)': '20170412A0002',
+		'实时定量PCR仪（Q5 0.2mL)': '20170412A0003',
+		#蛋白分析与定量平台
+		'AKTA purifier蛋白分离纯化系统': '20140526A0002',
+		'GE 双向电泳系统': '20140526A0003',
+		'Nanopro 1000蛋白微定量系统': '20150710A0001',
+		'生物大分子相互作用仪': '20140526A0001',
+		'荧光/化学发光成像分析仪': '20130529A0001',
+		#单细胞分选系统
+		'DEPArray单细胞分选系统': '20150713A0002',
+		#其他重要仪器
+		'Agilent 2100生化分析仪': '20150715A0003',
+		'Bioruptor plus超声破碎仪': '20150715A0001',
+		'LabRAM XploRA INV拉曼光谱仪': '20150715A0002',
+		'Multiskan GO酶标仪' :'20170103A0001',
+		'Synergy H4 多功能酶标仪': '20150715A0004',
+		#荧光显微镜
+		'MetaSystem染色体成像分析系统': '20150713A0001',
+		'Nikon Ti-U普通倒置荧光显微镜': '20181109A0001',
+		#生物信息
+		'IPA': '20160407A0001',
+		'NGS': '20160704A0001',
 	}
 	url_book = "http://10.1.7.222/yqgl/admin/apparatus/add4.aspx?id=" + instrument_id[value_instrument]
 	contain = session.get(url_book)
